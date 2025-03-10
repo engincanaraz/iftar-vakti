@@ -84,7 +84,7 @@ function App() {
       localStorage.setItem('lastCity', selectedCity);
     } catch (err) {
       console.error('Error fetching prayer times:', err);
-      setError('Namaz vakitleri yüklenemedi. Türkçe karakterli şehir isimlerinde sorun olabilir. Lütfen farklı bir şehir seçin veya daha sonra tekrar deneyin.');
+      setError('Namaz vakitleri yüklenemedi.');
     } finally {
       setLoading(false);
     }
