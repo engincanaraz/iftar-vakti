@@ -31,7 +31,7 @@ function App() {
     'Sivas', 'Şırnak', 'Tekirdağ', 'Tokat', 'Trabzon', 'Tunceli', 'Uşak', 'Van', 'Yalova', 'Yozgat', 'Zonguldak'
   ];
 
-  // Function to normalize Turkish characters to their Latin equivalents
+  // Türkçe karakterleri Latin eşdeğerlerine dönüştüren fonksiyon
   const normalizeTurkishChars = (text: string): string => {
     const turkishChars: Record<string, string> = {
       'ç': 'c',
@@ -54,9 +54,9 @@ function App() {
       setLoading(true);
       setError('');
       
-      // Normalize the city name to handle Turkish characters
+      // Türkçe karakterleri işlemek için şehir adını normalleştir
       const normalizedCity = normalizeTurkishChars(selectedCity.toLowerCase());
-      // Properly encode the city name for URL
+      // URL için şehir adını düzgün şekilde kodla
       const encodedCity = encodeURIComponent(normalizedCity);
       
       const response = await fetch(`https://api.collectapi.com/pray/all?data.city=${encodedCity}`, {
@@ -100,7 +100,7 @@ function App() {
 
     if (!iftarTime || !sahurTime) return;
 
-    // Parse prayer times
+    // Namaz vakitlerini ayrıştır
     const [iftarHours, iftarMinutes] = iftarTime.saat.split(':');
     const [sahurHours, sahurMinutes] = sahurTime.saat.split(':');
 
@@ -110,7 +110,7 @@ function App() {
     const sahur = new Date();
     sahur.setHours(parseInt(sahurHours), parseInt(sahurMinutes), 0);
 
-    // If sahur time is earlier than current time, it means sahur is for tomorrow
+    // Eğer sahur vakti şu anki zamandan önceyse, sahur yarın içindir
     if (sahur < now) {
       sahur.setDate(sahur.getDate() + 1);
     }
@@ -118,12 +118,16 @@ function App() {
     let targetTime;
     let label;
 
-    // If iftar time has passed, count down to sahur
-    if (now > iftar) {
+    // Şu anki zamanın gece yarısı ile iftar arasında olup olmadığını kontrol et (sabah erken saatlerden akşama kadar)
+    // Bu, gece saatlerinde (iftardan gece yarısına kadar) sahur geri sayımını göstermemizi sağlar
+    const currentHour = now.getHours();
+    
+    // Eğer iftar vakti geçtiyse veya sabah erken saatlerse (gece yarısından sonra)
+    if (now > iftar || (currentHour >= 0 && currentHour < parseInt(iftarHours))) {
       targetTime = sahur;
       label = 'Sahura kalan süre';
     } else {
-      // Otherwise count down to iftar
+      // Aksi takdirde iftara geri sayım yap
       targetTime = iftar;
       label = 'İftara kalan süre';
     }
@@ -148,7 +152,7 @@ function App() {
 
     if (!iftarTime || !sahurTime) return 0;
 
-    // Parse prayer times
+    // Namaz vakitlerini ayrıştır
     const [iftarHours, iftarMinutes] = iftarTime.saat.split(':');
     const [sahurHours, sahurMinutes] = sahurTime.saat.split(':');
 
@@ -158,43 +162,41 @@ function App() {
     const sahur = new Date();
     sahur.setHours(parseInt(sahurHours), parseInt(sahurMinutes), 0);
 
-    // If sahur time is earlier than current time, it means sahur is for tomorrow
+    // Eğer sahur vakti şu anki zamandan önceyse, sahur yarın içindir
     if (sahur < now) {
       sahur.setDate(sahur.getDate() + 1);
     }
 
+    // Sahura geri sayım yapıyorsak kontrol et - öyleyse, ilerleme çubuğunu gizlemek için 0 döndür
+    const currentHour = now.getHours();
+    if (now > iftar || (currentHour >= 0 && currentHour < parseInt(iftarHours))) {
+      return 0; // Sahura geri sayım yaparken ilerleme çubuğunu gizlemek için 0 döndür
+    }
+
     let startTime, endTime;
 
-    // If iftar time has passed, count down to sahur
-    if (now > iftar) {
-      // We're counting down to sahur
-      // Start time is iftar, end time is sahur
-      startTime = iftar;
-      endTime = sahur;
-    } else {
-      // We're counting down to iftar
-      // Start time is sahur, end time is iftar
-      startTime = sahur;
-      // If sahur is for tomorrow, then we need to use yesterday's sahur
-      if (sahur > now) {
-        const yesterdaySahur = new Date(sahur);
-        yesterdaySahur.setDate(yesterdaySahur.getDate() - 1);
-        startTime = yesterdaySahur;
-      }
-      endTime = iftar;
+    // İftara geri sayım yapıyoruz
+    // Başlangıç zamanı sahur, bitiş zamanı iftar
+    startTime = sahur;
+    // Eğer sahur yarın içinse, dünkü sahuru kullanmamız gerekir
+    if (sahur > now) {
+      const yesterdaySahur = new Date(sahur);
+      yesterdaySahur.setDate(yesterdaySahur.getDate() - 1);
+      startTime = yesterdaySahur;
     }
+    endTime = iftar;
 
     const totalDuration = endTime.getTime() - startTime.getTime();
     const elapsedDuration = now.getTime() - startTime.getTime();
     
-    // Calculate percentage (0-100)
+    // Yüzdeyi hesapla (0-100)
     const percentage = (elapsedDuration / totalDuration) * 100;
     
-    // Ensure percentage is between 0 and 100
+    // Yüzdenin 0 ile 100 arasında olduğundan emin ol
     return Math.max(0, Math.min(100, percentage));
   };
 
-  // Format and set current date
+  // Güncel tarihi biçimlendir ve ayarla
   const updateCurrentDate = () => {
     const now = new Date();
     const options: Intl.DateTimeFormatOptions = { 
@@ -264,13 +266,17 @@ function App() {
                 <span className="w-24 text-center">saniye</span>
               </div>
               <div className="text-sm text-gray-500 mb-4">{countdownLabel}</div>
-              <div className="relative h-2 bg-gray-100 rounded-full max-w-md mx-auto">
-                <div 
-                  className="absolute top-0 left-0 h-full bg-green-500 rounded-full" 
-                  style={{ width: `${calculatePercentage()}%` }}
-                ></div>
-              </div>
-              <div className="text-sm text-green-500 mt-1">% {calculatePercentage().toFixed(1)}</div>
+              {countdownLabel === 'İftara kalan süre' && (
+                <>
+                  <div className="relative h-2 bg-gray-100 rounded-full max-w-md mx-auto">
+                    <div 
+                      className="absolute top-0 left-0 h-full bg-green-500 rounded-full" 
+                      style={{ width: `${calculatePercentage()}%` }}
+                    ></div>
+                  </div>
+                  <div className="text-sm text-green-500 mt-1">% {calculatePercentage().toFixed(1)}</div>
+                </>
+              )}
             </div>
 
             <div className="space-y-4">
