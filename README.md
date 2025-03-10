@@ -1,0 +1,60 @@
+# İftara Ne Kadar Kaldı?  
+
+## 🕌 Genel Bakış  
+Bu uygulama, Ramazan ayı boyunca iftar (oruç açma) ve sahur (imsak) vakitlerine geri sayımı gösterir.  
+Türkiye'deki tüm şehirler için namaz vakitlerini sağlar ve görsel bir geri sayım sayacı sunar.  
+
+## ✨ Özellikler  
+- 🕒 **Gerçek zamanlı iftar ve sahur geri sayımı**  
+- 📍 **Türkiye'deki 81 il için namaz vakitleri**  
+- 📊 **Geçen sürenin yüzdesini gösteren görsel ilerleme çubuğu**  
+- 📅 **Türkçe formatta güncel tarih gösterimi**  
+- 💾 **Son seçilen şehri hatırlama özelliği**  
+- 🔄 **Otomatik olarak iftar ve sahur geri sayımı arasında geçiş yapma**  
+
+## 🛠 Kullanılan Teknolojiler  
+- ⚛️ **React (TypeScript ile)**  
+- ⚡ **Vite**  
+- 🎨 **Tailwind CSS**  
+- 🔗 **Lucide React (ikonlar için)**  
+
+## 🚀 Kurulum  
+
+1. **Depoyu klonlayın:**  
+   ```sh  
+   git clone <repository-url>  
+   cd <repository-folder>  
+   ```  
+2. **Bağımlılıkları yükleyin:**  
+   ```sh  
+   npm install  
+   ```  
+3. **Proje kök dizinine bir `.env` dosyası oluşturun ve API anahtarınızı ekleyin:**  
+   ```sh  
+   VITE_API_KEY=api_anahtarınız  
+   ```  
+4. **Geliştirme sunucusunu başlatın:**  
+   ```sh  
+   npm run dev  
+   ```  
+
+## 🔗 API Kullanımı  
+Bu uygulama, Türkiye'deki şehirler için namaz vakitlerini almak amacıyla **CollectAPI**'yi kullanır.  
+API erişimi için aşağıdaki adımları izleyin:  
+
+1. [CollectAPI](https://collectapi.com/) adresinden kaydolun.  
+2. **Namaz Vakitleri API'sine abone olun.**  
+3. **API anahtarınızı alıp `.env` dosyanıza ekleyin.**  
+
+
+## 🏗 Üretim İçin Derleme  
+
+Uygulamayı **üretime hazır hale getirmek** için:  
+```sh  
+npm run build  
+```  
+Üretim ortamını **ön izlemek** için:  
+```sh  
+npm run preview  
+```  
+
