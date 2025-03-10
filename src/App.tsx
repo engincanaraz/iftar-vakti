@@ -25,7 +25,7 @@ function App() {
     'Aydın', 'Balıkesir', 'Bartın', 'Batman', 'Bayburt', 'Bilecik', 'Bingöl', 'Bitlis', 'Bolu', 'Burdur',
     'Bursa', 'Çanakkale', 'Çankırı', 'Çorum', 'Denizli', 'Diyarbakır', 'Düzce', 'Edirne', 'Elazığ', 'Erzincan',
     'Erzurum', 'Eskişehir', 'Gaziantep', 'Giresun', 'Gümüşhane', 'Hakkari', 'Hatay', 'Iğdır', 'Isparta', 'Istanbul',
-    'İzmir', 'Kahramanmaraş', 'Karabük', 'Karaman', 'Kars', 'Kastamonu', 'Kayseri', 'Kilis', 'Kırıkkale', 'Kırklareli',
+    'Izmir', 'Kahramanmaraş', 'Karabük', 'Karaman', 'Kars', 'Kastamonu', 'Kayseri', 'Kilis', 'Kırıkkale', 'Kırklareli',
     'Kırşehir', 'Kocaeli', 'Konya', 'Kütahya', 'Malatya', 'Manisa', 'Mardin', 'Mersin', 'Muğla', 'Muş',
     'Nevşehir', 'Niğde', 'Ordu', 'Osmaniye', 'Rize', 'Sakarya', 'Samsun', 'Şanlıurfa', 'Siirt', 'Sinop',
     'Sivas', 'Şırnak', 'Tekirdağ', 'Tokat', 'Trabzon', 'Tunceli', 'Uşak', 'Van', 'Yalova', 'Yozgat', 'Zonguldak'
@@ -37,16 +37,15 @@ function App() {
       'ç': 'c',
       'ğ': 'g',
       'ı': 'i',
-      'i': 'i',
+      'İ': 'i',
       'ö': 'o',
       'ş': 's',
-      'ü': 'u',
-      'İ': 'I'
+      'ü': 'u'
     };
     
     return text
       .split('')
-      .map(char => turkishChars[char.toLowerCase()] || char)
+      .map(char => turkishChars[char] || turkishChars[char.toLowerCase()] || char.toLowerCase())
       .join('');
   };
 
@@ -57,8 +56,10 @@ function App() {
       
       // Normalize the city name to handle Turkish characters
       const normalizedCity = normalizeTurkishChars(selectedCity.toLowerCase());
+      // Properly encode the city name for URL
+      const encodedCity = encodeURIComponent(normalizedCity);
       
-      const response = await fetch(`https://api.collectapi.com/pray/all?data.city=${normalizedCity}`, {
+      const response = await fetch(`https://api.collectapi.com/pray/all?data.city=${encodedCity}`, {
         headers: {
           'content-type': 'application/json',
           'authorization': `apikey ${import.meta.env.VITE_API_KEY || 'your_api_key_here'}`
