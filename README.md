@@ -4,6 +4,9 @@
 Bu uygulama, Ramazan ayı boyunca iftar (oruç açma) ve sahur (imsak) vakitlerine geri sayımı gösterir.  
 Türkiye'deki tüm şehirler için namaz vakitlerini sağlar ve görsel bir geri sayım sayacı sunar.  
 
+<img width="835" alt="Ekran Resmi 2025-03-10 07 08 58" src="https://github.com/user-attachments/assets/7a9bece5-b428-48b9-8d16-dbe4beba02da" />
+
+
 ## ✨ Özellikler  
 - 🕒 **Gerçek zamanlı iftar ve sahur geri sayımı**  
 - 📍 **Türkiye'deki 81 il için namaz vakitleri**  
