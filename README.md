@@ -21,6 +21,24 @@ Türkiye'deki tüm şehirler için namaz vakitlerini sağlar ve görsel bir geri
 - 🎨 **Tailwind CSS**  
 - 🔗 **Lucide React (ikonlar için)**  
 
+## Eğer mobilde kullanmak isterseniz, iftar-vakti.netlify.app sitesine gidin.
+
+## 📱Android (Chrome veya Firefox ):
+
+1- Sağ üst köşedeki üç nokta menüsüne tıklayın.
+
+2- “Ana Ekrana Ekle” seçeneğini seçin.
+
+## 🍏 iOS (Safari):
+
+1- Alt kısımdaki paylaşma simgesine tıklayın.
+
+2- “Ana Ekrana Ekle” seçeneğine tıklayın.
+
+İşlem tamamlandı! Artık uygulama simgesine tıklayarak hızlıca erişebilirsiniz.
+
+⭐️ Eğer projeyi beğendiyseniz, yıldız vermeyi unutmayın! ⭐️
+
 ## 🚀 Kurulum  
 
 1. **Depoyu klonlayın:**  
