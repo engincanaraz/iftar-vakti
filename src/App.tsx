@@ -104,32 +104,37 @@ function App() {
     const [iftarHours, iftarMinutes] = iftarTime.saat.split(':');
     const [sahurHours, sahurMinutes] = sahurTime.saat.split(':');
 
+    // Bugünün iftar ve sahur zamanlarını oluştur
     const iftar = new Date();
-    iftar.setHours(parseInt(iftarHours), parseInt(iftarMinutes), 0);
+    iftar.setHours(parseInt(iftarHours), parseInt(iftarMinutes), 0, 0);
 
     const sahur = new Date();
-    sahur.setHours(parseInt(sahurHours), parseInt(sahurMinutes), 0);
+    sahur.setHours(parseInt(sahurHours), parseInt(sahurMinutes), 0, 0);
 
-    // Eğer sahur vakti şu anki zamandan önceyse, sahur yarın içindir
-    if (sahur < now) {
-      sahur.setDate(sahur.getDate() + 1);
-    }
+    // Yarının sahur zamanını oluştur
+    const tomorrowSahur = new Date(sahur);
+    tomorrowSahur.setDate(tomorrowSahur.getDate() + 1);
+
+    // Dünün iftar zamanını oluştur
+    const yesterdayIftar = new Date(iftar);
+    yesterdayIftar.setDate(yesterdayIftar.getDate() - 1);
 
     let targetTime;
     let label;
 
-    // Şu anki zamanın gece yarısı ile iftar arasında olup olmadığını kontrol et (sabah erken saatlerden akşama kadar)
-    // Bu, gece saatlerinde (iftardan gece yarısına kadar) sahur geri sayımını göstermemizi sağlar
-    const currentHour = now.getHours();
-    
-    // Eğer iftar vakti geçtiyse veya sabah erken saatlerse (gece yarısından sonra)
-    if (now > iftar || (currentHour >= 0 && currentHour < parseInt(iftarHours))) {
-      targetTime = sahur;
+    // Zaman aralıklarını belirle ve hedef zamanı ayarla
+    if (now >= iftar) {
+      // İftar sonrası - gece vakti: Yarının sahuruna geri sayım yap
+      targetTime = tomorrowSahur;
       label = 'Sahura kalan süre';
-    } else {
-      // Aksi takdirde iftara geri sayım yap
+    } else if (now >= sahur && now < iftar) {
+      // Sahur sonrası - iftar öncesi: Bugünün iftarına geri sayım yap
       targetTime = iftar;
       label = 'İftara kalan süre';
+    } else {
+      // Gece yarısı sonrası - sahur öncesi: Bugünün sahuruna geri sayım yap
+      targetTime = sahur;
+      label = 'Sahura kalan süre';
     }
 
     const diff = targetTime.getTime() - now.getTime();
@@ -156,44 +161,40 @@ function App() {
     const [iftarHours, iftarMinutes] = iftarTime.saat.split(':');
     const [sahurHours, sahurMinutes] = sahurTime.saat.split(':');
 
+    // Bugünün iftar ve sahur zamanlarını oluştur
     const iftar = new Date();
-    iftar.setHours(parseInt(iftarHours), parseInt(iftarMinutes), 0);
+    iftar.setHours(parseInt(iftarHours), parseInt(iftarMinutes), 0, 0);
 
     const sahur = new Date();
-    sahur.setHours(parseInt(sahurHours), parseInt(sahurMinutes), 0);
+    sahur.setHours(parseInt(sahurHours), parseInt(sahurMinutes), 0, 0);
 
-    // Eğer sahur vakti şu anki zamandan önceyse, sahur yarın içindir
-    if (sahur < now) {
-      sahur.setDate(sahur.getDate() + 1);
+    // Yarının sahur zamanını oluştur
+    const tomorrowSahur = new Date(sahur);
+    tomorrowSahur.setDate(tomorrowSahur.getDate() + 1);
+
+    // Dünün sahur zamanını oluştur
+    const yesterdaySahur = new Date(sahur);
+    yesterdaySahur.setDate(yesterdaySahur.getDate() - 1);
+
+    // İlerleme çubuğunu sadece iftar geri sayımı sırasında göster
+    // Sahur sonrası - iftar öncesi zaman diliminde miyiz?
+    if (now >= sahur && now < iftar) {
+      // İftara geri sayım yapıyoruz - ilerleme çubuğunu göster
+      const startTime = sahur;
+      const endTime = iftar;
+      
+      const totalDuration = endTime.getTime() - startTime.getTime();
+      const elapsedDuration = now.getTime() - startTime.getTime();
+      
+      // Yüzdeyi hesapla (0-100)
+      const percentage = (elapsedDuration / totalDuration) * 100;
+      
+      // Yüzdenin 0 ile 100 arasında olduğundan emin ol
+      return Math.max(0, Math.min(100, percentage));
+    } else {
+      // Sahura geri sayım yapıyoruz - ilerleme çubuğunu gizle
+      return 0;
     }
-
-    // Sahura geri sayım yapıyorsak kontrol et - öyleyse, ilerleme çubuğunu gizlemek için 0 döndür
-    const currentHour = now.getHours();
-    if (now > iftar || (currentHour >= 0 && currentHour < parseInt(iftarHours))) {
-      return 0; // Sahura geri sayım yaparken ilerleme çubuğunu gizlemek için 0 döndür
-    }
-
-    let startTime, endTime;
-
-    // İftara geri sayım yapıyoruz
-    // Başlangıç zamanı sahur, bitiş zamanı iftar
-    startTime = sahur;
-    // Eğer sahur yarın içinse, dünkü sahuru kullanmamız gerekir
-    if (sahur > now) {
-      const yesterdaySahur = new Date(sahur);
-      yesterdaySahur.setDate(yesterdaySahur.getDate() - 1);
-      startTime = yesterdaySahur;
-    }
-    endTime = iftar;
-
-    const totalDuration = endTime.getTime() - startTime.getTime();
-    const elapsedDuration = now.getTime() - startTime.getTime();
-    
-    // Yüzdeyi hesapla (0-100)
-    const percentage = (elapsedDuration / totalDuration) * 100;
-    
-    // Yüzdenin 0 ile 100 arasında olduğundan emin ol
-    return Math.max(0, Math.min(100, percentage));
   };
 
   // Güncel tarihi biçimlendir ve ayarla
